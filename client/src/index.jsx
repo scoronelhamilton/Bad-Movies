@@ -43,6 +43,7 @@ class App extends React.Component {
         
         <div className="main">
           <Search swapFavorites={this.swapFavorites} showFaves={this.state.showFaves}/>
+          
           <Movies movies={this.state.showFaves ? this.state.favorites : this.state.movies} showFaves={this.state.showFaves}/>
         </div>
       </div>
