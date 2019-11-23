@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
+import axios from 'axios';
 // import AnyComponent from './components/filename.jsx'
 import Search from './components/Search.jsx'
 import Movies from './components/Movies.jsx'
 
 class App extends React.Component {
   constructor(props) {
-  	super(props)
+    super(props)
+    
   	this.state = {
+      genres: [],
       movies: [{deway: "movies"}],
       favorites: [{deway: "favorites"}],
       showFaves: false,
@@ -17,8 +19,24 @@ class App extends React.Component {
     // you might have to do something important here!
   }
 
-  getMovies() {
-    // make an axios request to your server on the GET SEARCH endpoint
+  componentDidMount() {
+    this.getMovies();
+  }
+
+  getMovies(genreId) {
+    if (!genreId) {
+      genreId = this.state.genres[Math.floor(Math.random() * this.state.genres.length)]
+    }
+
+    axios.get(`/search/${genreId}`)
+    .then((movies) => {
+      this.setState({
+        movies: movies
+      })
+    })
+    .catch((error) => {
+      console.log(error);
+    })
   }
 
   saveMovie() {
