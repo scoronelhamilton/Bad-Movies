@@ -16,27 +16,38 @@ class App extends React.Component {
       showFaves: false,
     };
     
-    // you might have to do something important here!
+    this.swapFavorites = this.swapFavorites.bind(this);
+    this.getMovies = this.getMovies.bind(this);
   }
 
   componentDidMount() {
-    this.getMovies();
+    this.getGenres()
+    .then(() => this.getMovies())
+  }
+
+  getGenres() {
+    return axios.get('/genres')
+    .then((response) => {
+      this.setState({
+        genres: response.data
+      })
+    })
+    .catch(err => console.log(err)) 
   }
 
   getMovies(genreId) {
     if (!genreId) {
-      genreId = this.state.genres[Math.floor(Math.random() * this.state.genres.length)]
+      genreId = this.state.genres[Math.floor(Math.random() * this.state.genres.length)].id
     }
     
-    axios.get(`/search/28`)
+    axios.get(`/search/${genreId}`)
     .then((response) => {
-      console.log(response.data)
       this.setState({
         movies: response.data
       })
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
     })
   }
 
@@ -61,8 +72,7 @@ class App extends React.Component {
         <header className="navbar"><h1>Bad Movies</h1></header> 
         
         <div className="main">
-          <Search swapFavorites={this.swapFavorites} showFaves={this.state.showFaves}/>
-          
+          <Search swapFavorites={this.swapFavorites} showFaves={this.state.showFaves} searchMovies={this.getMovies} genres={this.state.genres}/>
           <Movies movies={this.state.showFaves ? this.state.favorites : this.state.movies} showFaves={this.state.showFaves}/>
         </div>
       </div>
