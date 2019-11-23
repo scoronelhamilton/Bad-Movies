@@ -13,7 +13,7 @@ class Search extends React.Component {
 
   render() {
     return (
-      <div className="search">
+      <li className="search">
         <button onClick={() => {this.props.swapFavorites()}}>{this.props.showFaves ? "Show Results" : "Show Favorites"}</button>
         <br/><br/>
 
@@ -29,7 +29,7 @@ class Search extends React.Component {
 
         <button>Search</button>
 
-      </div>
+      </li>
     );
   }
 }

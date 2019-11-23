@@ -27,11 +27,12 @@ class App extends React.Component {
     if (!genreId) {
       genreId = this.state.genres[Math.floor(Math.random() * this.state.genres.length)]
     }
-
-    axios.get(`/search/${genreId}`)
-    .then((movies) => {
+    
+    axios.get(`/search/28`)
+    .then((response) => {
+      console.log(response.data)
       this.setState({
-        movies: movies
+        movies: response.data
       })
     })
     .catch((error) => {
