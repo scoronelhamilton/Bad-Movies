@@ -1,3 +1,4 @@
+let client = require('../db/mongodb');
 let express = require('express');
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
@@ -23,8 +24,12 @@ app.listen(port, (error) => {
 });
 
 
-
-
+app.get('/test', (req, res) => {
+  let db = client.db('badmovies');
+  let favorites = db.collection('favorites');
+  favorites.insertOne({name: 'YA PUES'})
+  res.sendStatus(200)
+})
 
 
 

@@ -1,31 +1,66 @@
 const movieModel = require('../models/movieModel.js');
 const apiHelpers = require('../helpers/apiHelpers.js');
 
-//Return requests to the client
 module.exports = {
-  getSearch: (req, res) => {
-    // get the search genre     
+  getSearch: (req, res) => {  
+    let genreId = req.params.genre;
 
-    // https://www.themoviedb.org/account/signup
-    // get your API KEY
+    apiHelpers.searchMoviesByGenre(genreId)
+    .then(({data}) => {
+      let moviesList = data.results;
+      let movies =[];
+      let count = 0;
 
-    // use this endpoint to search for movies by genres, you will need an API key
+      for (let movie of moviesList) {
+        if(movie.poster_path !== null) {
+          let newMovie = apiHelpers.formatData(movie);
+          movies.push(newMovie);
+          count++;
+        }
+        if( count === 25 ) {
+          break;
+        }
+      }
 
-    // https://api.themoviedb.org/3/discover/movie
-
-    // and sort them by horrible votes using the search parameters in the API
+      res.json(movies);
+    })
+    .catch(err => {
+      console.log(err)
+      res.sendStatus(404);
+    })
   },
   getGenres: (req, res) => {
-    // make an axios request to get the list of official genres
-    
-    // use this endpoint, which will also require your API key: https://api.themoviedb.org/3/genre/movie/list
-    
-    // send back
+    apiHelpers.getGenres()
+    .then((response) => {
+      console.log(response.data.genres)
+      res.json(response.data.genres)
+    })
+    .catch(error => {
+      console.log(error);
+      res.sendStatus(404);
+    })
   },
   saveMovie: (req, res) => {
+    movieModel.save(req.body)
+    .then(() => {
+      res.sendStatus(201)
+    })
+    .catch(error => {
+      console.log(error);
+      res.sendStatus(500);
+    })
 
   },
   deleteMovie: (req, res) => {
-
+    let id = parseInt(req.params.id);
+    console.log(typeof id)
+    movieModel.delete(id)
+    .then((response) => {
+      res.sendStatus(200)
+    })
+    .catch(error => {
+      console.error(error);
+      res.sendStatus(500);
+    })
   }
 }
